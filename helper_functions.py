@@ -26,8 +26,8 @@ def create_meals_by_id():
     with open("meals_by_id.json", "w") as write_file:
         json.dump(all_meals, write_file, indent = 4)
 
-def get_num_ingredients(json_file):
-    with open(json_file, "r") as file:
+def get_num_ingredients(filename):
+    with open(filename, "r") as file:
         data = json.load(file)
 
     ingredients_count = {}

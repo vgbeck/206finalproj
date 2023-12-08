@@ -62,7 +62,7 @@ def create_holiday_table(cur, conn):
 
 
 def main():
-    cur, conn = setUpDatabase('country.db')
+    cur, conn = setUpDatabase('meals_by_id.db')
     create_country_table(cur, conn)
     response_API = requests.get('https://date.nager.at/api/v3/AvailableCountries', verify = False)
     data = json.loads(response_API.text)
@@ -70,10 +70,7 @@ def main():
         json.dump(data, write_file, indent=4)
 
     add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
+    
 
     holiday_count = 1
     country_id = cur.execute("SELECT country_id FROM country")
@@ -118,133 +115,6 @@ def main():
 
     
         
-# def christmas(cur, conn):
-        
-#     cur.execute(
-#         """
-#             SELECT country.name
-#             FROM country
-#             JOIN holiday
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.name = 'Christmas Day'
-#         """
-#     )
-#     res = cur.fetchall()
-#     conn.commit()
-#     return res
-
-# def independance_day(cur, conn):
-#     cur.execute(
-#         """
-#             SELECT country.name
-#             FROM country
-#             JOIN holiday
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.name = 'Independence Day'
-#         """
-#     )
-#     res2 = cur.fetchall()
-#     conn.commit()
-#     return res2
-
-# def may_day(cur, conn):
-#     cur.execute(
-#         """
-#             SELECT country.name
-#             FROM country
-#             JOIN holiday
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.name = 'May Day'
-#         """
-#     )
-#     res3 = cur.fetchall()
-#     conn.commit()
-#     return res3
-
-# def stephen_day(cur, conn):
-#     cur.execute(
-#         """
-#             SELECT country.name
-#             FROM country
-#             JOIN holiday
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.name = 'Constitution Day'
-#         """
-#     )
-#     res3 = cur.fetchall()
-#     conn.commit()
-#     return res3
-
-# def patrick_day(cur, conn):
-#     cur.execute(
-#         """
-#             SELECT country.name
-#             FROM country
-#             JOIN holiday
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.name = 'Easter Sunday'
-#         """
-#     )
-#     res3 = cur.fetchall()
-#     conn.commit()
-#     return res3
-
-# def first_half_us(cur,conn):
-#     cur.execute(
-#         """
-#             SELECT holiday.name
-#             FROM holiday
-#             JOIN country
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.date <'2024-07-02' AND country.name = 'United States'
-#         """
-#     )
-#     res = cur.fetchall()
-#     conn.commit()
-#     return res
-
-# def second_half_us(cur,conn):
-#     cur.execute(
-#         """
-#             SELECT holiday.name
-#             FROM holiday
-#             JOIN country
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.date > '2024-07-02' AND country.name = 'United States'
-#         """
-#     )
-#     res = cur.fetchall()
-#     conn.commit()
-#     return res
-
-
-# def first_half_canada(cur,conn):
-#     cur.execute(
-#         """
-#             SELECT holiday.name
-#             FROM holiday
-#             JOIN country
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.date <'2024-07-02' AND country.name = 'Canada'
-#         """
-#     )
-#     res = cur.fetchall()
-#     conn.commit()
-#     return res
-
-# def second_half_canada(cur,conn):
-#     cur.execute(
-#         """
-#             SELECT holiday.name
-#             FROM holiday
-#             JOIN country
-#             ON holiday.country_id = country.country_id
-#             WHERE holiday.date > '2024-07-02' AND country.name = 'Canada'
-#         """
-#     )
-#     res = cur.fetchall()
-#     conn.commit()
-#     return res
 
 
 if __name__ == "__main__":

@@ -211,7 +211,8 @@ def visualize(cur, conn):
     data["May Day"] = len(may_day(cur, conn))
     names = list(data.keys())
     vals = list(data.values())
-    plt.bar(names,vals)
+    colors = ["crimson", "pink", "palevioletred", "plum" , "lightcoral"]
+    plt.bar(names,vals, color = colors)
     plt.xlabel("Holiday")
     plt.ylabel("Number of occurances across all countries")
     plt.title("Holiday count")
@@ -220,41 +221,6 @@ def visualize(cur, conn):
     file_path = 'output.csv'
     return data.items()
 
-
-# def visualize_pi(cur, conn):
-
-#     us1 = len(first_half_us(cur,conn))
-#     us2 = len(second_half_us(cur,conn))
-#     canada1 = len(first_half_canada(cur,conn))
-#     canada2 = len(second_half_canada(cur,conn))
-    
-
-#     # fig, axs = plt.pie(1, 2)
-
-#     y = [us1, us2]
-#     x = ["First half of the year", "Second half of the year"]
-#     plt.pie(y, labels = x)
-#     plt.show()
-    
-
-#     y2 = [canada1, canada2]
-#     x2 = ["First half of the year", "Second half of the year"]
-
-#     plt.pie(y2, labels = x2)
-#     plt.title("# of Holidays in each Half of the Year")
-    
-#     plt.show()
-#     file_path = 'output.csv'
-    
-
-# # Open the file in write mode
-#     with open(file_path, 'w', newline='') as file:
-#         # Create a CSV writer object
-#         writer = csv.writer(file)
-
-#         # Write the data to the CSV file
-#         writer.writerows(y)
-#         writer.writerows(y2)
 
 def visualis_two_pie(cur, conn):
     us1 = len(first_half_us(cur,conn))
@@ -266,21 +232,23 @@ def visualis_two_pie(cur, conn):
     iceland1 = len(first_half_iceland(cur, conn))
     iceland2 = len(second_half_iceland(cur, conn))
 
-    labels1 = ["First half of the year", "Second half of the year"]
+    labels1 = ["First half", "Second half"]
     sizes1 = [us1, us2]
 
 # Data for the second pie chart
-    labels2 = ["First half of the year", "Second half of the year"]
+    labels2 = ["First half", "Second half"]
     sizes2 = [canada1, canada2]
 
-    labels3 = ["First half of the year", "Second half of the year"]
+    labels3 = ["First half", "Second half"]
     sizes3 = [mexico1, mexico2]
 
-    labels4 = ["First half of the year", "Second half of the year"]
+    labels4 = ["First half", "Second half"]
     sizes4 = [iceland1, iceland2]
 
-# Create subplots with 1 row and 2 columns
+# Create subplots with 1 row and 2 columns 
+
     fig, axs = plt.subplots(2, 2)
+    fig.suptitle("Number of Holidays in each Half of the Year")
 
 # Plot the first pie chart
     axs[0][0].pie(sizes1, labels=labels1, autopct='%1.1f%%')
@@ -305,18 +273,22 @@ def visualis_two_pie(cur, conn):
 
 
 def main():
-    cur, conn = setUpDatabase("country.db")
+    cur, conn = setUpDatabase("meals_by_id.db")
     bar = visualize(cur, conn)
-    # visualize_pi(cur, conn)
     pie = visualis_two_pie(cur, conn)
 
     with open("output.csv", 'w', newline='') as file:
         # Create a CSV writer object
-        writer = csv.writer(file)
+        # writer = csv.writer(file)
+        csvwriter = csv.writer(file, quoting = csv.QUOTE_MINIMAL)
 
         # Write the data to the CSV file
-        writer.writerows(bar)
-        writer.writerows(pie)
+        csvwriter.writerow(['Holiday', ' Number of countries observing'])
+        csvwriter.writerows(bar)
+        csvwriter.writerow([])
+        csvwriter.writerow(['Number of Holidays celebrated in first half of Year', 'Number of Holidays celebrated in second half of Year'])
+        csvwriter.writerow(['(In order of US', ' Canada', ' Mexico', ' Iceland)'])
+        csvwriter.writerows(pie)
 
 
 if __name__ == "__main__":
