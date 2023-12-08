@@ -19,8 +19,14 @@ def calculate_averages(cur, conn):
 def create_barchart(avg_data):
     categories, averages = zip(*avg_data)
 
+    colors = ['lightpink', 'purple']
+    color_array = []
+    for i in range(len(categories)):
+        color_index = i % len(colors)
+        color_array.append(colors[color_index])
+
     plt.figure(figsize = (10,6))
-    plt.bar(categories, averages, color = 'skyblue')
+    plt.bar(categories, averages, color = color_array)
     plt.xlabel('Category')
     plt.ylabel('Average Number of Ingredients')
     plt.title('Average Number of Ingredients Per Category')
