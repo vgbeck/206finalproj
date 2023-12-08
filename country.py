@@ -70,10 +70,7 @@ def main():
         json.dump(data, write_file, indent=4)
 
     add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
-    add_country("country.json", cur, conn)
+    
 
     holiday_count = 1
     country_id = cur.execute("SELECT country_id FROM country")
