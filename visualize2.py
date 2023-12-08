@@ -211,7 +211,7 @@ def visualize(cur, conn):
     data["May Day"] = len(may_day(cur, conn))
     names = list(data.keys())
     vals = list(data.values())
-    colors = ["red", "blue", "yellow", "green" , "orange"]
+    colors = ["crimson", "pink", "palevioletred", "plum" , "lightcoral"]
     plt.bar(names,vals, color = colors)
     plt.xlabel("Holiday")
     plt.ylabel("Number of occurances across all countries")
@@ -275,7 +275,6 @@ def visualis_two_pie(cur, conn):
 def main():
     cur, conn = setUpDatabase("meals_by_id.db")
     bar = visualize(cur, conn)
-    # visualize_pi(cur, conn)
     pie = visualis_two_pie(cur, conn)
 
     with open("output.csv", 'w', newline='') as file:
