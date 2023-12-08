@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import sqlite3
+import csv
 from meals import * 
 
 def calculate_averages(cur, conn):
@@ -35,10 +35,20 @@ def create_barchart(avg_data):
     
     plt.show()
 
+def write_averages_to_csv(avg_data, filename):
+    with open(filename, 'a', newline = '') as csvfile:
+        csvwriter = csv.writer(csvfile)
+
+    csvwriter.writerow(['Category', 'Average Number of Ingredients'])
+
+    for row in avg_data:
+        csvwriter.writerow(row)
+    
 
 cur, conn = set_up('meals_by_id.db')
 
 avg_data = calculate_averages(cur, conn)
 create_barchart(avg_data)
+write_averages_to_csv(avg_data, 'output.csv')
 
 conn.close()
