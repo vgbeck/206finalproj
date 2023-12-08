@@ -125,8 +125,12 @@ for name in category_name_list:
 
 
 
-## Combining each category json file into a file, meals_by_id.json, with all of the meals
+## Combining each category json file into a file, meals.json, with all of the meals
 merge_category_files(files_list)
+## Checking if meals_by_id.json already exists in the directory. I don't want to create it multiple times if it already 
+## exists because it takes over a minute to run.
+if not os.path.exists('meals_by_id.json'):
+    create_meals_by_id()
 
 cur, conn = set_up('meals_by_id.db')
 create_meals_table(cur, conn)
