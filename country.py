@@ -57,6 +57,68 @@ def create_holiday_table(cur, conn):
     ctx.verify_mode = ssl.CERT_NONE
     conn.commit()
 
+def add_holiday(cur, conn, holiday_count):
+
+    try:
+        cur.execute(
+            """
+                SELECT id 
+                FROM holiday
+                WHERE id = (SELECT MAX(id) FROM holiday)
+            """
+        )
+        start = cur.fetchone()
+        start = start[0]
+    except:
+        start = 0
+
+    holiday_count = start
+
+    four_countries = ["US", "IE", "AU", "FR"]
+    for item in four_countries:
+        json_name = item + ".json"
+        cur.execute(
+        f"""
+            SELECT id
+            FROM country
+            WHERE country_id = (?)
+
+        """, (item,)
+        )
+        res = cur.fetchone()
+        res2 = 0
+        if not(res == None):
+            cur.execute(
+            f"""
+                SELECT id
+                FROM holiday
+                WHERE country_id = (?)
+
+            """, (res[0],)
+            )
+            res2 = cur.fetchone()
+
+        if not(res == None) and (res2 == None):
+            response_country = requests.get('https://date.nager.at/api/v3/PublicHolidays/2024/' + str(item), verify=False)
+            data2 = json.loads(response_country.text)
+            with open(json_name, "w") as write_file:
+                json.dump(data2, write_file, indent=4)
+        
+            f = open(json_name)
+            data = json.load(f)
+            for holiday in data:
+                date = str(holiday["date"])
+                local_name = str(holiday["localName"])
+                name = str(holiday["name"])
+
+                cur.execute("INSERT OR IGNORE INTO holiday (id, country_id, date, local_name, name) VALUES (?,?,?,?,?)", (holiday_count, res[0], date, local_name, name))
+                holiday_count += 1
+                
+                conn.commit()
+    
+    
+
+
 
 
 
@@ -68,50 +130,44 @@ def main():
     data = json.loads(response_API.text)
     with open("country.json", "w") as write_file:
         json.dump(data, write_file, indent=4)
-
     add_country("country.json", cur, conn)
     
 
     holiday_count = 1
-    country_id = cur.execute("SELECT country_id FROM country")
-    fetching = cur.fetchall()
+    # country_id = cur.execute("SELECT country_id FROM country")
+    # fetching = cur.fetchall()
     create_holiday_table(cur, conn)
+    add_holiday(cur, conn, holiday_count)
 
-#QUESTION ON THIS seperate 25
-    for item in fetching:
-        json_name = item[0] + ".json"
+
+    # for item in fetching:
+    #     json_name = item[0] + ".json"
+    #     cur.execute(
+    #     f"""
+    #         SELECT id
+    #         FROM country
+    #         WHERE country_id = (?)
+
+    #     """, (item[0],)
+    #     )
+    #     res = cur.fetchone()
+
+
+    #     response_country = requests.get('https://date.nager.at/api/v3/PublicHolidays/2024/' + str(item[0]), verify=False)
+    #     data2 = json.loads(response_country.text)
+    #     with open(json_name, "w") as write_file:
+    #         json.dump(data2, write_file, indent=4)
         
-        # if(item[0] == "AD"):
-        #     print("HERE")
+    #     f = open(json_name)
+    #     data = json.load(f)
+    #     for holiday in data:
+    #         date = str(holiday["date"])
+    #         local_name = str(holiday["localName"])
+    #         name = str(holiday["name"])
 
-        #use a call from item[0] to the country table to decide
-        cur.execute(
-        f"""
-            SELECT id
-            FROM country
-            WHERE country_id = (?)
-
-        """, (item[0],)
-        )
-        res = cur.fetchone()
- 
-
-
-        response_country = requests.get('https://date.nager.at/api/v3/PublicHolidays/2024/' + str(item[0]), verify=False)
-        data2 = json.loads(response_country.text)
-        with open(json_name, "w") as write_file:
-            json.dump(data2, write_file, indent=4)
-        
-        f = open(json_name)
-        data = json.load(f)
-        for holiday in data:
-            date = str(holiday["date"])
-            local_name = str(holiday["localName"])
-            name = str(holiday["name"])
-
-            cur.execute("INSERT OR IGNORE INTO holiday (id, country_id, date, local_name, name) VALUES (?,?,?,?,?)", (holiday_count, res[0], date, local_name, name))
-            holiday_count += 1
-            conn.commit()
+    #         cur.execute("INSERT OR IGNORE INTO holiday (id, country_id, date, local_name, name) VALUES (?,?,?,?,?)", (holiday_count, res[0], date, local_name, name))
+    #         holiday_count += 1
+    #         conn.commit()
 
     
         
